@@ -138,6 +138,7 @@ class HashMap:
         index = self._hash_function(key) % self.get_capacity()
         if self._buckets[index]._head is not None:
             self._buckets[index].remove(key)
+            self._size -= 1
 
 
     def get_keys(self) -> DynamicArray:
