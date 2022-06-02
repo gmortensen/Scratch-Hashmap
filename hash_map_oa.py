@@ -121,34 +121,102 @@ class HashMap:
 
     def get(self, key: str) -> object:
         """
-        TODO: Write this implementation
+        This method returns the value associated with the given key. If the key is not in the hash
+        map, the method returns None.
         """
-        pass
+        index = self._hash_function(key) % self.get_capacity()
+        if self._size == 0 or self._buckets[index] is None:
+            return None
+        if self._buckets[index].is_tombstone is True and self._buckets[index].key == key:  # checks if key has been
+            return None  # removed from the hashmap
+        if self._buckets[index].key == key:
+            return self._buckets[index].value
+        if self._buckets[index].key != key:
+            quad_probe = 1
+            start_index = index
+            while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
+                index = (start_index + quad_probe ** 2) % self.get_capacity()
+                if self._buckets[index] is None or self._buckets[index].is_tombstone is True:
+                    return None
+                if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
+                    return self._buckets[index].value
+                quad_probe += 1
+            return None
+
 
     def contains_key(self, key: str) -> bool:
         """
-        TODO: Write this implementation
+        This method returns True if the given key is in the hash map, otherwise it returns False. An
+        empty hash map does not contain any keys.
         """
-        pass
+        index = self._hash_function(key) % self.get_capacity()
+        if self._size == 0 or self._buckets[index] is None:
+            return False
+        if self._buckets[index].is_tombstone is True and self._buckets[index].key == key:   # checks if key has been
+            return False                                                                    # removed from the hashmap
+        if self._buckets[index].key == key:
+            return True
+        if self._buckets[index].key != key:
+            quad_probe = 1
+            start_index = index
+            while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
+                index = (start_index + quad_probe ** 2) % self.get_capacity()
+                if self._buckets[index] is None or self._buckets[index].is_tombstone is True:
+                    return False
+                if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
+                    return True
+                quad_probe += 1
+            return False
 
     def remove(self, key: str) -> None:
         """
-        TODO: Write this implementation
+        This method removes the given key and its associated value from the hash map. If the key
+        is not in the hash map, the method does nothing (no exception needs to be raised).
         """
-        pass
+        index = self._hash_function(key) % self.get_capacity()
+        if self._size == 0 or self._buckets[index] is None:
+            return
+        if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
+            self._buckets[index].is_tombstone = True
+            self._size -= 1
+            return
+        if self._buckets[index].key != key:
+            quad_probe = 1
+            start_index = index
+            while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
+                index = (start_index + quad_probe ** 2) % self.get_capacity()
+                if self._buckets[index] is None or self._buckets[index].is_tombstone is True:
+                    return
+                if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
+                    self._buckets[index].is_tombstone = True
+                    self._size -= 1
+                    return
+                quad_probe += 1
+            return
+
+
+
 
     def clear(self) -> None:
         """
-        TODO: Write this implementation
+        This method clears the contents of the hash map. It does not change the underlying hash
+        table capacity.
         """
-        pass
+        curr_capacity = self._capacity
+        self._buckets = DynamicArray()
+        self._size = 0
+        for i in range(curr_capacity):
+            self._buckets.append(None)
 
     def get_keys(self) -> DynamicArray:
         """
-
+        This method returns a DynamicArray that contains all the keys stored in the hash map.
         """
-        pass
-
+        all_keys = DynamicArray()
+        for i in range(self._capacity):
+            if self._buckets[i] is not None:
+                all_keys.append(self._buckets[i].key)
+        return all_keys
 
 # ------------------- BASIC TESTING ---------------------------------------- #
 
