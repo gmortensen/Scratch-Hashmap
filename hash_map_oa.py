@@ -73,6 +73,9 @@ class HashMap:
         while self._buckets[index] is not None and self._buckets[index].is_tombstone is not True:
             index = (start_index + quad_probe**2) % self.get_capacity()
             quad_probe += 1
+        if self._buckets[index] is not None and self._buckets[index].key == new_entry.key:
+            self._buckets[index].value = new_entry.value
+            return
         self._buckets[index] = new_entry
         self._size += 1
         return
@@ -144,13 +147,13 @@ class HashMap:
 
 if __name__ == "__main__":
 
-    # print("\nPDF - put example 1")
-    # print("-------------------")
-    # m = HashMap(50, hash_function_1)
-    # for i in range(150):
-    #     m.put('str' + str(i), i * 100)
-    #     if i % 25 == 24:
-    #         print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
+    print("\nPDF - put example 1")
+    print("-------------------")
+    m = HashMap(50, hash_function_1)
+    for i in range(150):
+        m.put('str' + str(i), i * 100)
+        if i % 25 == 24:
+            print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
 
     print("\nPDF - put example 2")
     print("-------------------")
