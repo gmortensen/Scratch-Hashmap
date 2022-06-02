@@ -65,20 +65,27 @@ class HashMap:
             self._buckets[index] = new_entry
             self._size += 1
             return
-        if self._buckets[index].key == new_entry.key:
-            self._buckets[index].value = new_entry.value
+        # Target index is not empty. Check if index key is the same as new key, update value if it is
+        if self.key_exists(self._buckets[index], new_entry) is True:
             return
         quad_probe = 1
         start_index = index
         while self._buckets[index] is not None and self._buckets[index].is_tombstone is not True:
             index = (start_index + quad_probe**2) % self.get_capacity()
             quad_probe += 1
-        if self._buckets[index] is not None and self._buckets[index].key == new_entry.key:
-            self._buckets[index].value = new_entry.value
-            return
+            if self.key_exists(self._buckets[index], new_entry) is True:
+                return
         self._buckets[index] = new_entry
         self._size += 1
         return
+
+    def key_exists(self, old_entry, new_entry):
+        if old_entry is None:
+            return False
+        if old_entry.key == new_entry.key:
+            old_entry.value = new_entry.value
+            return True
+        return False
 
     def table_load(self) -> float:
         """
