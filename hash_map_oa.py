@@ -65,10 +65,10 @@ class HashMap:
             self._buckets[index] = new_entry
             self._size += 1
             return
+        quad_probe = 1
         while self._buckets[index] is not None and self._buckets[index].is_tombstone is not True:
-            index += 1
-            if index >= self.get_capacity() - 1:
-                index = 0
+            index = (index + quad_probe**2) % self.get_capacity()
+            quad_probe += 1
         self._buckets[index] = new_entry
         self._size += 1
         return
