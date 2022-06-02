@@ -57,26 +57,53 @@ class HashMap:
         """
         # remember, if the load factor is greater than or equal to 0.5,
         # resize the table before putting the new key/value pair
-        pass
+        if self.table_load() >= 0.5:
+            self.resize_table(self.get_capacity() * 2)
+        index = self._hash_function(key) % self.get_capacity()
+        new_entry = HashEntry(key, value)
+        if self._buckets[index] is None:
+            self._buckets[index] = new_entry
+            self._size += 1
+            return
+        while self._buckets[index] is not None and self._buckets[index].is_tombstone is not True:
+            index += 1
+            if index >= self.get_capacity() - 1:
+                index = 0
+        self._buckets[index] = new_entry
+        self._size += 1
+        return
 
     def table_load(self) -> float:
         """
-        TODO: Write this implementation
+        This method returns the current hash table load factor.
         """
-        pass
+        return self.get_size() / self.get_capacity()
 
     def empty_buckets(self) -> int:
         """
         TODO: Write this implementation
         """
-        pass
+        num_buckets = 0
+        for bucket in range(self._buckets.length()):
+            if self._buckets[bucket] is None or self._buckets[bucket].is_tombstone is True:
+                num_buckets += 1
+        return num_buckets
 
     def resize_table(self, new_capacity: int) -> None:
         """
         TODO: Write this implementation
         """
         # remember to rehash non-deleted entries into new table
-        pass
+        if new_capacity < 1:
+            return
+        new_map = HashMap(new_capacity, self._hash_function)
+        for bucket in range(self._buckets.length()):
+            if self._buckets[bucket] is not None and self._buckets[bucket].is_tombstone is False:
+                new_map.put(self._buckets[bucket].key, self._buckets[bucket].value)
+        self._buckets = new_map._buckets
+        self._capacity = new_map._capacity
+        self._hash_function = new_map._hash_function
+        self._size = new_map._size
 
     def get(self, key: str) -> object:
         """
