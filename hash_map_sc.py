@@ -192,19 +192,18 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
     """
     map = HashMap(da.length() // 3, hash_function_1)
     for i in range(da.length()):
-        map.mode_put(da[i])
+        map.mode_put(da[i])         # adds key/value pair to a HashMap with value holding number of times a key appears
     mode_count = 0
-    for bucket in range(map._buckets.length()):
-        if map._buckets[bucket]._head is not None:
-            for node in map._buckets[bucket]:
-                if node.value > mode_count:
-                    mode_count = node.value
+    keys_arr = map.get_keys()
+    for key in range(keys_arr.length()):
+        value = map.get(keys_arr[key])
+        if value is not None and value > mode_count:
+            mode_count = value
     mode_arr = DynamicArray()
-    for bucket in range(map._buckets.length()):
-        if map._buckets[bucket]._head is not None:
-            for node in map._buckets[bucket]:
-                if node.value == mode_count:
-                    mode_arr.append(node.key)
+    for key in range(keys_arr.length()):
+        value = map.get(keys_arr[key])
+        if value == mode_count:
+            mode_arr.append(keys_arr[key])
     return (mode_arr, mode_count)
 
 # ------------------- BASIC TESTING ---------------------------------------- #
