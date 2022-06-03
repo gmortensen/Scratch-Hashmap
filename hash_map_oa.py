@@ -1,9 +1,12 @@
-# Name:
-# OSU Email:
+# Name: Gabriel Mortensen
+# OSU Email: mortenga@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment: HashMap Implementation using Open Addressing with Quadratic Probing for Collision Resolution
+# Due Date: 06/03/2022
+# Description: Implementation of a HashMap using a Dynamic Array to store the Hash Table and open addressing using
+# quadratic probing for collision resolution. Key/Value Pairs are stored in the Dynamic Array.
+# Implementation includes put, get, remove, contains_key, clear, empty_buckets, resize_table, table_load, and get_keys
+# methods.
 
 
 from a6_include import (DynamicArray, HashEntry,
@@ -53,15 +56,15 @@ class HashMap:
 
     def put(self, key: str, value: object) -> None:
         """
-        TODO: Write this implementation
+        This method updates the key / value pair in the hash map. If the given key already exists in
+        the hash map, its associated value must be replaced with the new value. If the given key is
+        not in the hash map, a key / value pair must be added.
         """
-        # remember, if the load factor is greater than or equal to 0.5,
-        # resize the table before putting the new key/value pair
         if self.table_load() >= 0.5:
-            self.resize_table(self.get_capacity() * 2)
+            self.resize_table(self.get_capacity() * 2)          # maintains a table load factor under 0.5
         index = self._hash_function(key) % self.get_capacity()
         new_entry = HashEntry(key, value)
-        if self._buckets[index] is None:
+        if self._buckets[index] is None:                        # adds new entry at index if it is empty
             self._buckets[index] = new_entry
             self._size += 1
             return
@@ -80,6 +83,11 @@ class HashMap:
         return
 
     def key_exists(self, old_entry, new_entry):
+        """
+        Method that updates the value of an existing key in the HashMap with a new value if the key is already in the
+        HashMap. If an existing key is currently a Tombstone, it is turned into a regular entry and the size is
+        incremented
+        """
         if old_entry is None:
             return False
         if old_entry.key == new_entry.key:
@@ -98,7 +106,7 @@ class HashMap:
 
     def empty_buckets(self) -> int:
         """
-
+        This method returns the number of empty buckets in the hash table.
         """
         num_buckets = 0
         for bucket in range(self._buckets.length()):
@@ -108,12 +116,11 @@ class HashMap:
 
     def resize_table(self, new_capacity: int) -> None:
         """
-
+        This method changes the capacity of the internal hash table. All existing key / value pairs
+        must remain in the new hash map, and all hash table links must be rehashed. If
+        new_capacity is less than 1, or less than the current number of elements in the map, the
+        method does nothing.
         """
-        # remember to rehash non-deleted entries into new table
-        # Come back and add tests and functionality to ensure that tombstone values are not being included
-        # in the new resized table. If a value from the old table was a Tombstone value, it should not count towards
-        # size
         if new_capacity < 1 or new_capacity < self._size:
             return
         new_map = HashMap(new_capacity, self._hash_function)
@@ -150,7 +157,6 @@ class HashMap:
                 quad_probe += 1
             return None
 
-
     def contains_key(self, key: str) -> bool:
         """
         This method returns True if the given key is in the hash map, otherwise it returns False. An
@@ -180,7 +186,6 @@ class HashMap:
         This method removes the given key and its associated value from the hash map. If the key
         is not in the hash map, the method does nothing (no exception needs to be raised).
         """
-
         index = self._hash_function(key) % self.get_capacity()
         if self._size == 0 or self._buckets[index] is None:
             return
@@ -214,7 +219,7 @@ class HashMap:
         curr_capacity = self._capacity
         self._buckets = DynamicArray()
         self._size = 0
-        for i in range(curr_capacity):
+        for bucket in range(curr_capacity):
             self._buckets.append(None)
 
     def get_keys(self) -> DynamicArray:
