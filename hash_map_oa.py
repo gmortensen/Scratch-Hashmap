@@ -183,9 +183,9 @@ class HashMap:
 
         index = self._hash_function(key) % self.get_capacity()
         if self._size == 0 or self._buckets[index] is None:
-            return None
-        if self._buckets[index].is_tombstone is True and self._buckets[index].key == key:  # checks if key has been
-            return None  # removed from the hashmap
+            return
+        if self._buckets[index].is_tombstone is True and self._buckets[index].key == key:
+            return
         if self._buckets[index].key == key:
             self._buckets[index].is_tombstone = True
             self._size -= 1
@@ -193,7 +193,7 @@ class HashMap:
         if self._buckets[index].key != key:
             quad_probe = 1
             start_index = index
-            while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
+            while self._buckets[index] is not None:
                 index = (start_index + quad_probe ** 2) % self.get_capacity()
                 if self._buckets[index] is None:
                     return
@@ -204,7 +204,7 @@ class HashMap:
                     self._size -= 1
                     return
                 quad_probe += 1
-            return None
+            return
 
 
         # index = self._hash_function(key) % self.get_capacity()
