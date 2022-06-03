@@ -84,6 +84,9 @@ class HashMap:
             return False
         if old_entry.key == new_entry.key:
             old_entry.value = new_entry.value
+            if old_entry.is_tombstone is True:
+                old_entry.is_tombstone = False
+                self._size += 1
             return True
         return False
 
