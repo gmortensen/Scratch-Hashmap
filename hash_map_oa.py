@@ -108,7 +108,10 @@ class HashMap:
         TODO: Write this implementation
         """
         # remember to rehash non-deleted entries into new table
-        if new_capacity < 1:
+        # Come back and add tests and functionality to ensure that tombstone values are not being included
+        # in the new resized table. If a value from the old table was a Tombstone value, it should not count towards
+        # size
+        if new_capacity < 1 or new_capacity < self._size:
             return
         new_map = HashMap(new_capacity, self._hash_function)
         new_map._capacity = new_capacity
