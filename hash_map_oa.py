@@ -180,10 +180,13 @@ class HashMap:
         This method removes the given key and its associated value from the hash map. If the key
         is not in the hash map, the method does nothing (no exception needs to be raised).
         """
+
         index = self._hash_function(key) % self.get_capacity()
         if self._size == 0 or self._buckets[index] is None:
-            return
-        if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
+            return None
+        if self._buckets[index].is_tombstone is True and self._buckets[index].key == key:  # checks if key has been
+            return None  # removed from the hashmap
+        if self._buckets[index].key == key:
             self._buckets[index].is_tombstone = True
             self._size -= 1
             return
@@ -192,19 +195,38 @@ class HashMap:
             start_index = index
             while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
                 index = (start_index + quad_probe ** 2) % self.get_capacity()
-                if self._buckets[index] is None:
-                    return
-                if self._buckets[index].key == key and self._buckets[index].is_tombstone is True:
+                if self._buckets[index] is None or self._buckets[index].is_tombstone is True:
                     return
                 if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
                     self._buckets[index].is_tombstone = True
                     self._size -= 1
                     return
                 quad_probe += 1
-            return
+            return None
 
 
-
+        # index = self._hash_function(key) % self.get_capacity()
+        # if self._size == 0 or self._buckets[index] is None:
+        #     return
+        # if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
+        #     self._buckets[index].is_tombstone = True
+        #     self._size -= 1
+        #     return
+        # if self._buckets[index].key != key:
+        #     quad_probe = 1
+        #     start_index = index
+        #     while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
+        #         index = (start_index + quad_probe ** 2) % self.get_capacity()
+        #         if self._buckets[index] is None:
+        #             return
+        #         if self._buckets[index].key == key and self._buckets[index].is_tombstone is True:
+        #             return
+        #         if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
+        #             self._buckets[index].is_tombstone = True
+        #             self._size -= 1
+        #             return
+        #         quad_probe += 1
+        #     return
 
     def clear(self) -> None:
         """
@@ -232,61 +254,61 @@ class HashMap:
 
 if __name__ == "__main__":
 
-    # print("\nPDF - put example 1")
-    # print("-------------------")
-    # m = HashMap(50, hash_function_1)
-    # for i in range(150):
-    #     m.put('str' + str(i), i * 100)
-    #     if i % 25 == 24:
-    #         print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - put example 2")
-    # print("-------------------")
-    # m = HashMap(40, hash_function_2)
-    # for i in range(50):
-    #     m.put('str' + str(i // 3), i * 100)
-    #     if i % 10 == 9:
-    #         print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - table_load example 1")
-    # print("--------------------------")
-    # m = HashMap(100, hash_function_1)
-    # print(m.table_load())
-    # m.put('key1', 10)
-    # print(m.table_load())
-    # m.put('key2', 20)
-    # print(m.table_load())
-    # m.put('key1', 30)
-    # print(m.table_load())
-    #
-    # print("\nPDF - table_load example 2")
-    # print("--------------------------")
-    # m = HashMap(50, hash_function_1)
-    # for i in range(50):
-    #     m.put('key' + str(i), i * 100)
-    #     if i % 10 == 0:
-    #         print(m.table_load(), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - empty_buckets example 1")
-    # print("-----------------------------")
-    # m = HashMap(100, hash_function_1)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    # m.put('key1', 10)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    # m.put('key2', 20)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    # m.put('key1', 30)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    # m.put('key4', 40)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - empty_buckets example 2")
-    # print("-----------------------------")
-    # m = HashMap(50, hash_function_1)
-    # for i in range(150):
-    #     m.put('key' + str(i), i * 100)
-    #     if i % 30 == 0:
-    #         print(m.empty_buckets(), m.get_size(), m.get_capacity())
+    print("\nPDF - put example 1")
+    print("-------------------")
+    m = HashMap(50, hash_function_1)
+    for i in range(150):
+        m.put('str' + str(i), i * 100)
+        if i % 25 == 24:
+            print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
+
+    print("\nPDF - put example 2")
+    print("-------------------")
+    m = HashMap(40, hash_function_2)
+    for i in range(50):
+        m.put('str' + str(i // 3), i * 100)
+        if i % 10 == 9:
+            print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
+
+    print("\nPDF - table_load example 1")
+    print("--------------------------")
+    m = HashMap(100, hash_function_1)
+    print(m.table_load())
+    m.put('key1', 10)
+    print(m.table_load())
+    m.put('key2', 20)
+    print(m.table_load())
+    m.put('key1', 30)
+    print(m.table_load())
+
+    print("\nPDF - table_load example 2")
+    print("--------------------------")
+    m = HashMap(50, hash_function_1)
+    for i in range(50):
+        m.put('key' + str(i), i * 100)
+        if i % 10 == 0:
+            print(m.table_load(), m.get_size(), m.get_capacity())
+
+    print("\nPDF - empty_buckets example 1")
+    print("-----------------------------")
+    m = HashMap(100, hash_function_1)
+    print(m.empty_buckets(), m.get_size(), m.get_capacity())
+    m.put('key1', 10)
+    print(m.empty_buckets(), m.get_size(), m.get_capacity())
+    m.put('key2', 20)
+    print(m.empty_buckets(), m.get_size(), m.get_capacity())
+    m.put('key1', 30)
+    print(m.empty_buckets(), m.get_size(), m.get_capacity())
+    m.put('key4', 40)
+    print(m.empty_buckets(), m.get_size(), m.get_capacity())
+
+    print("\nPDF - empty_buckets example 2")
+    print("-----------------------------")
+    m = HashMap(50, hash_function_1)
+    for i in range(150):
+        m.put('key' + str(i), i * 100)
+        if i % 30 == 0:
+            print(m.empty_buckets(), m.get_size(), m.get_capacity())
 
     print("\nPDF - resize example 1")
     print("----------------------")
