@@ -115,7 +115,7 @@ class HashMap:
             if self._buckets[bucket] is not None and self._buckets[bucket].is_tombstone is False:
                 new_map.put(self._buckets[bucket].key, self._buckets[bucket].value)
         self._buckets = new_map._buckets
-        self._capacity = new_map._capacity
+        self._capacity = new_capacity
         self._hash_function = new_map._hash_function
         self._size = new_map._size
 
