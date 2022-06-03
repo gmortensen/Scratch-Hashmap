@@ -195,7 +195,9 @@ class HashMap:
             start_index = index
             while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
                 index = (start_index + quad_probe ** 2) % self.get_capacity()
-                if self._buckets[index] is None or self._buckets[index].is_tombstone is True:
+                if self._buckets[index] is None:
+                    return
+                if self._buckets[index].key == key and self._buckets[index].is_tombstone is True:
                     return
                 if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
                     self._buckets[index].is_tombstone = True
