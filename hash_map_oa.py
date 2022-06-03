@@ -70,7 +70,7 @@ class HashMap:
             return
         quad_probe = 1
         start_index = index
-        while self._buckets[index] is not None and self._buckets[index].is_tombstone is not True:
+        while self._buckets[index] is not None:
             index = (start_index + quad_probe**2) % self.get_capacity()
             quad_probe += 1
             if self.key_exists(self._buckets[index], new_entry) is True:
@@ -98,7 +98,7 @@ class HashMap:
 
     def empty_buckets(self) -> int:
         """
-        TODO: Write this implementation
+
         """
         num_buckets = 0
         for bucket in range(self._buckets.length()):
@@ -108,7 +108,7 @@ class HashMap:
 
     def resize_table(self, new_capacity: int) -> None:
         """
-        TODO: Write this implementation
+
         """
         # remember to rehash non-deleted entries into new table
         # Come back and add tests and functionality to ensure that tombstone values are not being included
@@ -141,7 +141,7 @@ class HashMap:
         if self._buckets[index].key != key:
             quad_probe = 1
             start_index = index
-            while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
+            while self._buckets[index] is not None:
                 index = (start_index + quad_probe ** 2) % self.get_capacity()
                 if self._buckets[index] is None or self._buckets[index].is_tombstone is True:
                     return None
@@ -166,7 +166,7 @@ class HashMap:
         if self._buckets[index].key != key:
             quad_probe = 1
             start_index = index
-            while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
+            while self._buckets[index] is not None:
                 index = (start_index + quad_probe ** 2) % self.get_capacity()
                 if self._buckets[index] is None or self._buckets[index].is_tombstone is True:
                     return False
@@ -205,30 +205,6 @@ class HashMap:
                     return
                 quad_probe += 1
             return
-
-
-        # index = self._hash_function(key) % self.get_capacity()
-        # if self._size == 0 or self._buckets[index] is None:
-        #     return
-        # if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
-        #     self._buckets[index].is_tombstone = True
-        #     self._size -= 1
-        #     return
-        # if self._buckets[index].key != key:
-        #     quad_probe = 1
-        #     start_index = index
-        #     while self._buckets[index] is not None and self._buckets[index].is_tombstone is False:
-        #         index = (start_index + quad_probe ** 2) % self.get_capacity()
-        #         if self._buckets[index] is None:
-        #             return
-        #         if self._buckets[index].key == key and self._buckets[index].is_tombstone is True:
-        #             return
-        #         if self._buckets[index].key == key and self._buckets[index].is_tombstone is False:
-        #             self._buckets[index].is_tombstone = True
-        #             self._size -= 1
-        #             return
-        #         quad_probe += 1
-        #     return
 
     def clear(self) -> None:
         """
