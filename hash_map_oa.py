@@ -224,7 +224,8 @@ class HashMap:
         all_keys = DynamicArray()
         for i in range(self._capacity):
             if self._buckets[i] is not None:
-                all_keys.append(self._buckets[i].key)
+                if self._buckets[i].is_tombstone is False:
+                    all_keys.append(self._buckets[i].key)
         return all_keys
 
 # ------------------- BASIC TESTING ---------------------------------------- #
